@@ -1,58 +1,5 @@
-use num::complex::Complex;
-use std::fmt;
-
-struct Qubit {
-    pub index: usize,
-}
-
-#[derive(Debug)]
-struct QuantumState {
-    dim: usize,
-    qubit_count: usize,
-    states: Vec<Complex<f64>>,
-}
-
-impl QuantumState {
-    pub fn new(n: usize) -> QuantumState {
-        let dim = 1 << n;
-        let mut states = vec![Complex::new(0., 0.); dim];
-        states[0] = Complex::new(1., 0.);
-        QuantumState {
-            dim,
-            qubit_count: n,
-            states,
-        }
-    }
-}
-
-impl fmt::Display for QuantumState {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let sv: Vec<String> = self.states.iter().map(|x| x.to_string()).collect();
-        let svs = sv.join("\n");
-        let tmp = format!(
-            r"* Qubit Count  : {}
-* Dimension    : {}
-* State vector :
-{}
-",
-            self.qubit_count, self.dim, svs
-        );
-        write!(f, "{}", tmp)
-    }
-}
-
-enum PauliID {
-    I,
-    X,
-    Y,
-    Z,
-}
-enum GateMatrixType {
-    DenseMatrix,
-    PauliMatrix(PauliID),
-}
-
-struct QuantumGate {}
+//use num::complex::Complex;
+use qustV2::state::QuantumState;
 
 // fn set(sim: &mut QuantumSimulator, qubit: &Qubit, r: MeasuredResult) {
 //     if sim.measure(qubit) != r {
@@ -74,12 +21,23 @@ fn main() {
 
     //     assert_eq!(sim.measure(&qubits[0]), sim.measure(&qubits[1]));
     // }
-    print!("hello world");
 
     // ============= 量子状態 =================
     println!("QuantumState");
     let n = 2;
-    let state = QuantumState::new(n);
+    let mut state = QuantumState::new(n);
     //println!("{:?}", state);
+    println!("{}", state);
+
+    // |00>に初期化
+    state.set_zero_state();
+    // 基底を二進数と見た時の整数値を入れて、その状態に初期化
+    state.set_computational_basis(1);
+    println!("{}", state);
+
+    // シードを指定してランダムな初期状態を生成
+    // (シードを省略した場合は時刻を用いてシードを決定します。)
+    let seed = 0;
+    state.set_haar_random_state(seed);
     println!("{}", state);
 }
