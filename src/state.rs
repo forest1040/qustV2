@@ -1,6 +1,5 @@
 use num::complex::Complex;
-use rand::distributions::{Standard, WeightedIndex};
-//use rand::distributions::StandardNormal;
+use rand::distributions::WeightedIndex;
 use rand::prelude::*;
 use std::fmt;
 
@@ -88,14 +87,6 @@ impl QuantumState {
         //     throw std::invalid_argument("qubit index >= num_qubit");
         // }
         m0_prob(target_qubit_index, &self.get_vector(), self.dim)
-        // let mask = 1usize << target_qubit_index;
-        // let mut sum = 0.;
-        // for i in 0..self.dim << 1 {
-        //     let temp_basis = (i >> target_qubit_index) << (target_qubit_index + 1);
-        //     let basis_1 = (temp_basis + i % mask) ^ mask;
-        //     sum += self.states[basis_1].powi(2).re;
-        // }
-        // sum
     }
 
     pub fn sampling(&self, sampling_count: usize) -> Vec<usize> {
