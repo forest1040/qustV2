@@ -9,3 +9,5 @@
 - 制御ビットの数は2bitまで
 - 純粋状態のみ対応
 - 1スレッドのCPUのみ対応
+
+とりあえず[qulacsのチュートリアル](http://docs.qulacs.org/ja/latest/intro/4.1_python_tutorial.html)を実装できる程度をめざします。
