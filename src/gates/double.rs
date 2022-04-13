@@ -1,4 +1,4 @@
-use crate::{carray, carray_i, GateMatrixType, Qubit};
+use crate::{carray, carray_i, GateMatrixType};
 use ndarray::prelude::*;
 use num::complex::Complex;
 use once_cell::sync::Lazy;
@@ -16,7 +16,7 @@ pub struct DoubleGate {
 macro_rules! gen_gates {
     ($mat: ident) => {
         #[allow(non_snake_case)]
-        fn $mat(&mut self, qubit1: &Qubit, qubit2: &Qubit) {
+        fn $mat(&mut self, qubit1: usize, qubit2: usize) {
             self.apply_double(&$mat.matrix, qubit1, qubit2);
         }
     };
@@ -27,7 +27,7 @@ macro_rules! gen_gates {
 }
 
 pub trait DoubleGateApplicator {
-    fn apply_double(&mut self, matrix: &Array2<Complex<f64>>, qubit1: &Qubit, qubit2: &Qubit);
+    fn apply_double(&mut self, matrix: &Array2<Complex<f64>>, qubit1: usize, qubit2: usize);
 
     gen_gates!(CNOT, SWAP, SQSWAP);
 }

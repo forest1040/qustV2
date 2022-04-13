@@ -4,8 +4,6 @@ use rand::distributions::WeightedIndex;
 use rand::prelude::*;
 use std::fmt;
 
-use crate::Qubit;
-
 #[derive(Debug)]
 pub struct QuantumState {
     dim: usize,
@@ -130,10 +128,11 @@ impl QuantumState {
         Complex::new(real_sum, imag_sum)
     }
 
-    pub fn apply(&mut self, qubits: &[&Qubit], matrix: &Array2<Complex<f64>>) {
+    pub fn apply(&mut self, qubits: &Vec<usize>, matrix: &Array2<Complex<f64>>) {
+        let qsize = qubits.len();
         let masks = mask_vec(qubits);
         println!("masks: {:?}", masks);
-        for i in 0..self.dim >> qubits.len() {
+        for i in 0..self.dim >> qsize {
             let indices = indices_vec(i, qubits, &masks);
             println!("indices_vec: {:?}", indices);
             let values = indices.iter().map(|&i| self.states[i]).collect::<Vec<_>>();
@@ -182,15 +181,15 @@ fn insert_zero_to_basis_index(basis_index: usize, basis_mask: usize, qubit_index
     temp_basis + basis_index % basis_mask
 }
 
-pub fn mask_vec(qubits: &[&Qubit]) -> Vec<usize> {
-    let min_qubit_index = qubits.iter().map(|q| q.index).min().unwrap();
-    let max_qubit_index = qubits.iter().map(|q| q.index).max().unwrap();
+pub fn mask_vec(qubits: &Vec<usize>) -> Vec<usize> {
+    let min_qubit_index = qubits.iter().min().unwrap();
+    let max_qubit_index = qubits.iter().max().unwrap();
     let min_qubit_mask = 1usize << min_qubit_index;
     let max_qubit_mask = 1usize
         << if qubits.len() > 1 {
-            max_qubit_index - 1
+            *max_qubit_index - 1
         } else {
-            max_qubit_index
+            *max_qubit_index
         };
     let mask_low = min_qubit_mask - 1;
     let mask_high = !(max_qubit_mask - 1);
@@ -201,9 +200,10 @@ pub fn mask_vec(qubits: &[&Qubit]) -> Vec<usize> {
     res
 }
 
-pub fn indices_vec(index: usize, qubits: &[&Qubit], masks: &[usize]) -> Vec<usize> {
+pub fn indices_vec(index: usize, qubits: &Vec<usize>, masks: &[usize]) -> Vec<usize> {
     let mut qubits = qubits.to_owned();
-    qubits.sort_by(|a, b| a.index.cmp(&b.index));
+    //qubits.sort_by(|a, b| a.cmp(&b));
+    qubits.sort();
     let mut res = Vec::with_capacity(qubits.len());
     let mask = masks[0];
     let mask_low = masks[1];
@@ -218,8 +218,8 @@ pub fn indices_vec(index: usize, qubits: &[&Qubit], masks: &[usize]) -> Vec<usiz
         let basis_1 = basis_0 + mask;
         res.push(basis_1);
     } else if qubits.len() == 2 {
-        let target_mask1 = 1usize << qubits[1].index;
-        let target_mask2 = 1usize << qubits[0].index;
+        let target_mask1 = 1usize << qubits[1];
+        let target_mask2 = 1usize << qubits[0];
         let basis_1 = basis_0 + target_mask1;
         let basis_2 = basis_0 + target_mask2;
         let basis_3 = basis_1 + target_mask2;

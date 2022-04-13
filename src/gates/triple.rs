@@ -1,4 +1,4 @@
-use crate::{carray, GateMatrixType, Qubit};
+use crate::{carray, GateMatrixType};
 use ndarray::prelude::*;
 use num::complex::Complex;
 use once_cell::sync::Lazy;
@@ -16,7 +16,7 @@ pub struct TripleGate {
 macro_rules! gen_gates {
     ($mat: ident) => {
         #[allow(non_snake_case)]
-        fn $mat(&mut self, qubit1: &Qubit, qubit2: &Qubit, qubit3: &Qubit) {
+        fn $mat(&mut self, qubit1: usize, qubit2: usize, qubit3: usize) {
             self.apply_triple(&$mat.matrix, qubit1, qubit2, qubit3);
         }
     };
@@ -30,9 +30,9 @@ pub trait TripleGateApplicator {
     fn apply_triple(
         &mut self,
         matrix: &Array2<Complex<f64>>,
-        qubit1: &Qubit,
-        qubit2: &Qubit,
-        qubit3: &Qubit,
+        qubit1: usize,
+        qubit2: usize,
+        qubit3: usize,
     );
 
     gen_gates!(CCNOT, CSWAP);

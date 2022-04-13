@@ -1,4 +1,4 @@
-use crate::{carray, carray_i, state::QuantumState, GateMatrixType, Qubit};
+use crate::{carray, carray_i, state::QuantumState, GateMatrixType};
 use ndarray::prelude::*;
 use num::complex::Complex;
 use once_cell::sync::Lazy;
@@ -8,7 +8,7 @@ use super::gate::QuantumGate;
 macro_rules! gen_gates {
     ($mat: ident) => {
         #[allow(non_snake_case)]
-        fn $mat(&mut self, qubit: &Qubit) {
+        fn $mat(&mut self, target_qubit: usize) {
             //self.apply_single(&$mat.matrix, qubit)
         }
         // fn update_quantum_state() {
@@ -23,7 +23,7 @@ macro_rules! gen_gates {
 
 pub trait SingleGate {
     //fn apply_single(&mut self, matrix: &Array2<Complex<f64>>, qubit: &Qubit) -> &mut QuantumGate;
-    fn set_target_qubit(&mut self, qubit: &Qubit);
+    fn set_target_qubit(&mut self, target_qubit: usize);
     fn update_quantum_state(&mut self, state: &mut QuantumState);
 }
 
@@ -33,19 +33,16 @@ impl SingleGate for QuantumGate {
     //     self.target_qubit_index.push(qubit.index);
     //     self
     // }
-    fn set_target_qubit(&mut self, qubit: &Qubit) {
-        self.target_qubit_index.push(qubit.index);
+    fn set_target_qubit(&mut self, target_qubit: usize) {
+        self.target_qubit_index.push(target_qubit);
     }
     fn update_quantum_state(&mut self, state: &mut QuantumState) {
-        // TODO: qubits のIF修正
-        let qubit1 = Qubit { index: 1 };
-        let qubits = &[&qubit1];
-        state.apply(qubits, &self.matrix);
+        state.apply(&self.target_qubit_index, &self.matrix);
     }
 }
 
 pub trait SingleGateApplicator {
-    fn apply_single(&mut self, matrix: &Array2<Complex<f64>>, qubit: &Qubit);
+    fn apply_single(&mut self, matrix: &Array2<Complex<f64>>, target_qubit: usize);
     gen_gates!(H, X, Y, Z, ID);
 }
 

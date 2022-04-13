@@ -2,7 +2,6 @@ use num::complex::Complex;
 use qustV2::{
     gates::single::{SingleGate, X},
     state::QuantumState,
-    Qubit,
 };
 
 // fn set(sim: &mut QuantumSimulator, qubit: &Qubit, r: MeasuredResult) {
@@ -75,19 +74,17 @@ fn main() {
     // println!("{:?}", value);
 
     // ============= 量子ゲート =================
-    let qubit = Qubit { index: 1 };
     let mut x_gate = X();
-    x_gate.set_target_qubit(&qubit);
+    x_gate.set_target_qubit(1);
     println!("{:?}", x_gate);
 
     let n = 2;
     let mut state = QuantumState::new(n);
     println!("{}", state);
 
-    let qubit = Qubit { index: 1 };
     let mut x_gate = X();
     // TODO: コンストラクタでindexを指定できるようにする
-    x_gate.set_target_qubit(&qubit);
+    x_gate.set_target_qubit(1);
 
     x_gate.update_quantum_state(&mut state);
     println!("{}", state);
