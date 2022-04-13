@@ -57,11 +57,11 @@ pub static H: Lazy<QuantumGate> = {
     })
 };
 
-pub fn X() -> QuantumGate {
+pub fn X(target_qubit: usize) -> QuantumGate {
     QuantumGate {
         matrix_type: GateMatrixType::DenseMatrix,
         matrix: carray![[0., 1.], [1., 0.]],
-        target_qubit_index: vec![],
+        target_qubit_index: vec![target_qubit],
         control_qubit_index: vec![],
         pauli_id: vec![],
         rotation_angle: 0.,

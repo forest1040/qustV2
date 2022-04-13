@@ -74,18 +74,14 @@ fn main() {
     // println!("{:?}", value);
 
     // ============= 量子ゲート =================
-    let mut x_gate = X();
-    x_gate.set_target_qubit(1);
+    let x_gate = X(1);
     println!("{:?}", x_gate);
 
     let n = 2;
     let mut state = QuantumState::new(n);
     println!("{}", state);
 
-    let mut x_gate = X();
-    // TODO: コンストラクタでindexを指定できるようにする
-    x_gate.set_target_qubit(1);
-
+    let mut x_gate = X(1);
     x_gate.update_quantum_state(&mut state);
     println!("{}", state);
 }
