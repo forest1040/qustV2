@@ -130,7 +130,7 @@ impl QuantumState {
         Complex::new(real_sum, imag_sum)
     }
 
-    fn apply(&mut self, qubits: &[&Qubit], matrix: &Array2<Complex<f64>>) {
+    pub fn apply(&mut self, qubits: &[&Qubit], matrix: &Array2<Complex<f64>>) {
         let masks = mask_vec(qubits);
         println!("masks: {:?}", masks);
         for i in 0..self.dim >> qubits.len() {

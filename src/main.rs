@@ -79,4 +79,16 @@ fn main() {
     let mut x_gate = X();
     x_gate.set_target_qubit(&qubit);
     println!("{:?}", x_gate);
+
+    let n = 2;
+    let mut state = QuantumState::new(n);
+    println!("{}", state);
+
+    let qubit = Qubit { index: 1 };
+    let mut x_gate = X();
+    // TODO: コンストラクタでindexを指定できるようにする
+    x_gate.set_target_qubit(&qubit);
+
+    x_gate.update_quantum_state(&mut state);
+    println!("{}", state);
 }
