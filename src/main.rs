@@ -1,5 +1,9 @@
 use num::complex::Complex;
-use qustV2::{gates::single::X, state::QuantumState, Qubit};
+use qustV2::{
+    gates::single::{SingleGate, X},
+    state::QuantumState,
+    Qubit,
+};
 
 // fn set(sim: &mut QuantumSimulator, qubit: &Qubit, r: MeasuredResult) {
 //     if sim.measure(qubit) != r {
@@ -72,6 +76,7 @@ fn main() {
 
     // ============= 量子ゲート =================
     let qubit = Qubit { index: 1 };
-    let x_gate = &X;
+    let mut x_gate = X();
+    x_gate.set_target_qubit(&qubit);
     println!("{:?}", x_gate);
 }
