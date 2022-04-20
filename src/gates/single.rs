@@ -25,6 +25,7 @@ pub trait SingleGate {
     //fn apply_single(&mut self, matrix: &Array2<Complex<f64>>, qubit: &Qubit) -> &mut QuantumGate;
     fn set_target_qubit(&mut self, target_qubit: usize);
     fn update_quantum_state(&mut self, state: &mut QuantumState);
+    fn add_control_qubit(&mut self, control_qubit: usize);
 }
 
 impl SingleGate for QuantumGate {
@@ -38,6 +39,10 @@ impl SingleGate for QuantumGate {
     }
     fn update_quantum_state(&mut self, state: &mut QuantumState) {
         state.apply(&self.target_qubit_index, &self.matrix);
+    }
+
+    fn add_control_qubit(&mut self, control_qubit: usize) {
+        self.control_qubit_index.push(control_qubit);
     }
 }
 
@@ -57,6 +62,7 @@ pub static H: Lazy<QuantumGate> = {
     })
 };
 
+#[allow(non_snake_case)]
 pub fn X(target_qubit: usize) -> QuantumGate {
     QuantumGate {
         matrix_type: GateMatrixType::DenseMatrix,

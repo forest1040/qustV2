@@ -130,12 +130,16 @@ impl QuantumState {
 
     pub fn apply(&mut self, qubits: &Vec<usize>, matrix: &Array2<Complex<f64>>) {
         let qsize = qubits.len();
+        // TODO: 制御ビット対応
+        //qubits.push(0);
+        //let qubits = qubits.push(0);
         let masks = mask_vec(qubits);
         println!("masks: {:?}", masks);
         for i in 0..self.dim >> qsize {
             let indices = indices_vec(i, qubits, &masks);
             println!("indices_vec: {:?}", indices);
             let values = indices.iter().map(|&i| self.states[i]).collect::<Vec<_>>();
+            // TODO: 制御ビット対応
             println!("matrix: {}", matrix);
             let new_values = matrix.dot(&arr1(&values));
             println!("new_values: {}", new_values);
