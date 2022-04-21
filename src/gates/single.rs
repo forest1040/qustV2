@@ -8,8 +8,8 @@ use super::gate::QuantumGate;
 macro_rules! gen_gates {
     ($mat: ident) => {
         #[allow(non_snake_case)]
-        fn $mat(&mut self, target_qubit: usize) {
-            //self.apply_single(&$mat.matrix, qubit)
+        fn $mat(&mut self, qubit: usize) {
+            self.apply_single(&$mat.matrix, qubit)
         }
         // fn update_quantum_state() {
 
@@ -23,6 +23,7 @@ macro_rules! gen_gates {
 
 pub trait SingleGate {
     //fn apply_single(&mut self, matrix: &Array2<Complex<f64>>, qubit: &Qubit) -> &mut QuantumGate;
+    fn apply_single(&mut self, matrix: &Array2<Complex<f64>>, qubit: usize);
     fn set_target_qubit(&mut self, target_qubit: usize);
     fn update_quantum_state(&mut self, state: &mut QuantumState);
     fn add_control_qubit(&mut self, control_qubit: usize);
@@ -34,6 +35,8 @@ impl SingleGate for QuantumGate {
     //     self.target_qubit_index.push(qubit.index);
     //     self
     // }
+    fn apply_single(&mut self, matrix: &Array2<Complex<f64>>, qubit: usize) {}
+
     fn set_target_qubit(&mut self, target_qubit: usize) {
         self.target_qubit_index.push(target_qubit);
     }
@@ -52,7 +55,8 @@ impl SingleGate for QuantumGate {
 
 pub trait SingleGateApplicator {
     fn apply_single(&mut self, matrix: &Array2<Complex<f64>>, target_qubit: usize);
-    gen_gates!(H, X, Y, Z, ID);
+    //gen_gates!(H, X, Y, Z, ID);
+    gen_gates!(H, Y, Z, ID);
 }
 
 pub static H: Lazy<QuantumGate> = {
