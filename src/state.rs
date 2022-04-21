@@ -128,18 +128,52 @@ impl QuantumState {
         Complex::new(real_sum, imag_sum)
     }
 
-    pub fn apply(&mut self, qubits: &Vec<usize>, matrix: &Array2<Complex<f64>>) {
-        let qsize = qubits.len();
-        // TODO: 制御ビット対応
-        //qubits.push(0);
-        //let qubits = qubits.push(0);
-        let masks = mask_vec(qubits);
+    // pub fn applyOld(
+    //     &mut self,
+    //     qubits_ctrl: &Vec<usize>,
+    //     qubits_target: &Vec<usize>,
+    //     matrix: &Array2<Complex<f64>>,
+    // ) {
+    //     let qsize = qubits_ctrl.len() + qubits_target.len();
+    //     // TODO: 制御ビット対応
+    //     //qubits.push(0);
+    //     //let qubits = qubits.push(0);
+    //     let mut qubits = qubits_target.to_owned();
+    //     qubits.append(&mut qubits_target);
+
+    //     let masks = mask_vec(&qubits);
+    //     println!("masks: {:?}", masks);
+    //     for i in 0..self.dim >> qsize {
+    //         let indices = indices_vec(i, &qubits, &masks);
+    //         println!("indices_vec: {:?}", indices);
+    //         let values = indices.iter().map(|&i| self.states[i]).collect::<Vec<_>>();
+    //         // TODO: 制御ビット対応
+    //         println!("matrix: {}", matrix);
+    //         let new_values = matrix.dot(&arr1(&values));
+    //         println!("new_values: {}", new_values);
+    //         for (&i, nv) in indices.iter().zip(new_values.to_vec()) {
+    //             self.states[i] = nv;
+    //         }
+    //     }
+    // }
+
+    pub fn apply(
+        &mut self,
+        qubits_ctrl: &Vec<usize>,
+        qubits_target: &Vec<usize>,
+        matrix: &Array2<Complex<f64>>,
+    ) {
+        let qsize = qubits_ctrl.len() + qubits_target.len();
+        let mut qubits = qubits_ctrl.to_owned();
+        let mut qubits_tgt = qubits_target.to_owned();
+        qubits.append(&mut qubits_tgt);
+
+        let masks = mask_vec(&qubits);
         println!("masks: {:?}", masks);
         for i in 0..self.dim >> qsize {
-            let indices = indices_vec(i, qubits, &masks);
+            let indices = indices_vec(i, &qubits_ctrl, &qubits_target, &masks);
             println!("indices_vec: {:?}", indices);
             let values = indices.iter().map(|&i| self.states[i]).collect::<Vec<_>>();
-            // TODO: 制御ビット対応
             println!("matrix: {}", matrix);
             let new_values = matrix.dot(&arr1(&values));
             println!("new_values: {}", new_values);
@@ -204,8 +238,13 @@ pub fn mask_vec(qubits: &Vec<usize>) -> Vec<usize> {
     res
 }
 
-pub fn indices_vec(index: usize, qubits: &Vec<usize>, masks: &[usize]) -> Vec<usize> {
-    let mut qubits = qubits.to_owned();
+pub fn indices_vec(
+    index: usize,
+    qubits_ctl: &Vec<usize>,
+    qubits_tgt: &Vec<usize>,
+    masks: &[usize],
+) -> Vec<usize> {
+    let mut qubits = qubits_tgt.to_owned();
     //qubits.sort_by(|a, b| a.cmp(&b));
     qubits.sort();
     let mut res = Vec::with_capacity(qubits.len());
@@ -219,8 +258,16 @@ pub fn indices_vec(index: usize, qubits: &Vec<usize>, masks: &[usize]) -> Vec<us
     //     res.push(basis);
     // }
     if qubits.len() == 1 {
-        let basis_1 = basis_0 + mask;
-        res.push(basis_1);
+        if qubits_ctl.len() > 0 {
+            // TODO: 複数制御ビット対応
+            let control_mask = 1usize << qubits_ctl[0];
+            let basis_0 = (index & mask_low) + ((index & mask_high) << qubits.len()) + control_mask;
+            let basis_1 = basis_0 + mask;
+            res.push(basis_1);
+        } else {
+            let basis_1 = basis_0 + mask;
+            res.push(basis_1);
+        }
     } else if qubits.len() == 2 {
         let target_mask1 = 1usize << qubits[1];
         let target_mask2 = 1usize << qubits[0];
