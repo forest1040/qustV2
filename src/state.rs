@@ -154,6 +154,7 @@ impl QuantumState {
         matrix: &Array2<Complex<f64>>,
     ) {
         let qsize = qubits_ctrl.len() + qubits_target.len();
+        println!("qsize: {}", qsize);
         let mut qubits = qubits_ctrl.to_owned();
         let mut qubits_tgt = qubits_target.to_owned();
         qubits.append(&mut qubits_tgt);
@@ -164,7 +165,7 @@ impl QuantumState {
             let indices = indices_vec(i, &qubits_ctrl, &qubits_target, &masks);
             println!("indices_vec: {:?}", indices);
             let values = indices.iter().map(|&i| self.states[i]).collect::<Vec<_>>();
-            println!("matrix: {}", matrix);
+            //println!("matrix: {}", matrix);
             let new_values = matrix.dot(&arr1(&values));
             println!("new_values: {}", new_values);
             for (&i, nv) in indices.iter().zip(new_values.to_vec()) {
@@ -248,8 +249,8 @@ pub fn indices_vec(
     let mask = masks[0];
     let mask_low = masks[1];
     let mask_high = masks[2];
-    let basis_0 = (index & mask_low) + ((index & mask_high) << qubits.len());
-    res.push(basis_0);
+    //let basis_0 = (index & mask_low) + ((index & mask_high) << qubits.len());
+    //res.push(basis_0);
     // for i in 1..qubits.len() << 1 {
     //     let basis = basis_0 + mask;
     //     res.push(basis);
@@ -258,19 +259,26 @@ pub fn indices_vec(
         if qubits_ctl.len() > 0 {
             // TODO: 複数制御ビット対応
             let control_mask = 1usize << qubits_ctl[0];
-            let basis_0 = (index & mask_low) + ((index & mask_high) << qubits.len()) + control_mask;
-            let basis_1 = basis_0 + mask;
+            let qsize = qubits_ctl.len() + qubits_tgt.len();
+            let basis_0 = (index & mask_low) + ((index & mask_high) << qsize) + control_mask;
+            let target_mask = 1usize << qubits_tgt[0];
+            let basis_1 = basis_0 + target_mask;
+            res.push(basis_0);
             res.push(basis_1);
         } else {
+            let basis_0 = (index & mask_low) + ((index & mask_high) << qubits.len());
             let basis_1 = basis_0 + mask;
+            res.push(basis_0);
             res.push(basis_1);
         }
     } else if qubits.len() == 2 {
+        let basis_0 = (index & mask_low) + ((index & mask_high) << qubits.len());
         let target_mask1 = 1usize << qubits[1];
         let target_mask2 = 1usize << qubits[0];
         let basis_1 = basis_0 + target_mask1;
         let basis_2 = basis_0 + target_mask2;
         let basis_3 = basis_1 + target_mask2;
+        res.push(basis_0);
         res.push(basis_1);
         res.push(basis_2);
         res.push(basis_3);
