@@ -19,7 +19,6 @@ macro_rules! gen_gates {
 
 pub trait SingleGateApplicator {
     fn add_single(&mut self, gate: QuantumGate);
-    fn update_quantum_state(&mut self);
     gen_gates!(H, X, Y, Z, ID, SQNOT);
 }
 

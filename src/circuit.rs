@@ -2,8 +2,10 @@ use std::fmt;
 
 use crate::{
     gates::{
+        double::DoubleGateApplicator,
         gate::{GateOp, QuantumGate},
         single::SingleGateApplicator,
+        triple::TripleGateApplicator,
     },
     state::QuantumState,
 };
@@ -25,16 +27,28 @@ impl QuantumCircuit {
     pub fn add_gate(&mut self, gate: QuantumGate) {
         self.gate_list.push(gate);
     }
+    pub fn update_quantum_state(&mut self) {
+        for gate in &self.gate_list {
+            gate.update_quantum_state(&mut self.state);
+        }
+    }
 }
 
 impl SingleGateApplicator for QuantumCircuit {
     fn add_single(&mut self, gate: QuantumGate) {
         self.add_gate(gate);
     }
-    fn update_quantum_state(&mut self) {
-        for gate in &self.gate_list {
-            gate.update_quantum_state(&mut self.state);
-        }
+}
+
+impl DoubleGateApplicator for QuantumCircuit {
+    fn add_double(&mut self, gate: QuantumGate) {
+        self.add_gate(gate);
+    }
+}
+
+impl TripleGateApplicator for QuantumCircuit {
+    fn add_triple(&mut self, gate: QuantumGate) {
+        self.add_gate(gate);
     }
 }
 

@@ -2,17 +2,11 @@ use num::complex::Complex;
 use qustV2::{
     circuit::QuantumCircuit,
     gates::{
-        gate::GateOp,
+        double::DoubleGateApplicator,
         single::{SingleGateApplicator, X},
     },
     state::QuantumState,
 };
-
-// fn set(sim: &mut QuantumSimulator, qubit: &Qubit, r: MeasuredResult) {
-//     if sim.measure(qubit) != r {
-//         sim.X(qubit);
-//     }
-// }
 
 fn main() {
     // // ============= 量子状態 =================
@@ -92,13 +86,13 @@ fn main() {
     // ============= 量子回路 =================
     let n = 4;
     let mut circuit = QuantumCircuit::new(n);
-    circuit.H(0);
-    circuit.X(0);
-    circuit.Y(0);
-    circuit.Z(0);
-    circuit.ID(0);
-    circuit.SQNOT(0);
-    println!("{}", circuit);
+    // circuit.H(0);
+    // circuit.X(0);
+    // circuit.Y(0);
+    // circuit.Z(0);
+    // circuit.ID(0);
+    // circuit.SQNOT(0);
+    // println!("{}", circuit);
 
     // circuit.X(0);
     // circuit.X(1);
@@ -118,4 +112,9 @@ fn main() {
     // circuit.add_gate(x_gate);
     // circuit.update_quantum_state();
     // println!("{}", circuit);
+
+    circuit.X(0);
+    circuit.CNOT(0, 1);
+    circuit.update_quantum_state();
+    println!("{}", circuit);
 }

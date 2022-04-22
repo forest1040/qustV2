@@ -1,23 +1,13 @@
 use crate::{carray, carray_i, GateMatrixType};
 use ndarray::prelude::*;
-use num::complex::Complex;
-use once_cell::sync::Lazy;
 
-#[derive(Debug)]
-pub struct DoubleGate {
-    matrix_type: GateMatrixType,
-    pauli_id: Vec<usize>,
-    rotation_angle: f64,
-    matrix: Array2<Complex<f64>>,
-    target_qubit_index: Vec<usize>,
-    control_qubit_index: Vec<usize>,
-}
+use super::gate::QuantumGate;
 
 macro_rules! gen_gates {
     ($mat: ident) => {
         #[allow(non_snake_case)]
         fn $mat(&mut self, qubit1: usize, qubit2: usize) {
-            self.apply_double(&$mat.matrix, qubit1, qubit2);
+            self.add_double($mat(qubit1, qubit2));
         }
     };
 
@@ -27,13 +17,13 @@ macro_rules! gen_gates {
 }
 
 pub trait DoubleGateApplicator {
-    fn apply_double(&mut self, matrix: &Array2<Complex<f64>>, qubit1: usize, qubit2: usize);
-
+    fn add_double(&mut self, gate: QuantumGate);
     gen_gates!(CNOT, SWAP, SQSWAP);
 }
 
-pub static CNOT: Lazy<DoubleGate> = {
-    Lazy::new(|| DoubleGate {
+#[allow(non_snake_case)]
+pub fn CNOT(qubit1: usize, qubit2: usize) -> QuantumGate {
+    QuantumGate {
         matrix_type: GateMatrixType::DenseMatrix,
         matrix: carray![
             [1., 0., 0., 0.],
@@ -41,14 +31,16 @@ pub static CNOT: Lazy<DoubleGate> = {
             [0., 0., 0., 1.],
             [0., 0., 1., 0.]
         ],
-        target_qubit_index: vec![],
+        target_qubit_index: vec![qubit1, qubit2],
         control_qubit_index: vec![],
         pauli_id: vec![],
         rotation_angle: 0.,
-    })
-};
-pub static SWAP: Lazy<DoubleGate> = {
-    Lazy::new(|| DoubleGate {
+    }
+}
+
+#[allow(non_snake_case)]
+pub fn SWAP(qubit1: usize, qubit2: usize) -> QuantumGate {
+    QuantumGate {
         matrix_type: GateMatrixType::DenseMatrix,
         matrix: carray![
             [1., 0., 0., 0.],
@@ -56,14 +48,16 @@ pub static SWAP: Lazy<DoubleGate> = {
             [0., 1., 0., 0.],
             [0., 0., 0., 1.]
         ],
-        target_qubit_index: vec![],
+        target_qubit_index: vec![qubit1, qubit2],
         control_qubit_index: vec![],
         pauli_id: vec![],
         rotation_angle: 0.,
-    })
-};
-pub static SQSWAP: Lazy<DoubleGate> = {
-    Lazy::new(|| DoubleGate {
+    }
+}
+
+#[allow(non_snake_case)]
+pub fn SQSWAP(qubit1: usize, qubit2: usize) -> QuantumGate {
+    QuantumGate {
         matrix_type: GateMatrixType::DenseMatrix,
         matrix: carray![
             [1., 0., 0., 0.],
@@ -76,9 +70,9 @@ pub static SQSWAP: Lazy<DoubleGate> = {
             [0., -0.5, 0.5, 0.],
             [0., 0., 0., 0.]
         ],
-        target_qubit_index: vec![],
+        target_qubit_index: vec![qubit1, qubit2],
         control_qubit_index: vec![],
         pauli_id: vec![],
         rotation_angle: 0.,
-    })
-};
+    }
+}
