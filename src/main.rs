@@ -1,7 +1,7 @@
 use num::complex::Complex;
 use qustV2::{
     circuit::QuantumCircuit,
-    gates::single::{SingleGate, SingleGateApplicator, X},
+    gates::single::{SingleGateApplicator, X},
     state::QuantumState,
 };
 
@@ -87,16 +87,15 @@ fn main() {
     // println!("{}", state);
 
     // ============= 量子回路 =================
-    let n = 5;
+    let n = 4;
     let mut circuit = QuantumCircuit::new(n);
-    println!("{:?}", circuit);
+    println!("{}", circuit);
 
-    circuit.H(0);
-    //circuit.
+    circuit.X(0);
+    circuit.update_quantum_state();
+    println!("{}", circuit);
 
-    //circuit.
-
-    //circuit.
-
+    // circuit.X(0);
+    // circuit.H(0);
     // update_quantum_state()
 }

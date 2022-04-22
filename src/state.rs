@@ -108,16 +108,6 @@ impl QuantumState {
     }
 
     pub fn inner_product(state_bra: QuantumState, state_ket: QuantumState) -> Complex<f64> {
-        // double real_sum = 0.;
-        // double imag_sum = 0.;
-        // ITYPE index;
-        // for (index = 0; index < dim; ++index) {
-        //     CTYPE value;
-        //     value += conj(state_bra[index]) * state_ket[index];
-        //     real_sum += _creal(value);
-        //     imag_sum += _cimag(value);
-        // }
-        // return real_sum + 1.i * imag_sum;
         let mut real_sum = 0.;
         let mut imag_sum = 0.;
         for i in 0..state_bra.dim {
