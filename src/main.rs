@@ -92,17 +92,30 @@ fn main() {
     // ============= 量子回路 =================
     let n = 4;
     let mut circuit = QuantumCircuit::new(n);
-    //println!("{}", circuit);
+    circuit.H(0);
+    circuit.X(0);
+    circuit.Y(0);
+    circuit.Z(0);
+    circuit.ID(0);
+    circuit.SQNOT(0);
+    println!("{}", circuit);
 
     // circuit.X(0);
     // circuit.X(1);
     // circuit.update_quantum_state();
     // println!("{}", circuit);
 
-    circuit.X(0);
-    let mut x_gate = X(1);
-    x_gate.add_control_qubit(0);
-    circuit.add_gate(x_gate);
-    circuit.update_quantum_state();
-    println!("{}", circuit);
+    // circuit.X(0);
+    // let mut x_gate = X(1);
+    // x_gate.add_control_qubit(0);
+    // circuit.add_gate(x_gate);
+    // circuit.update_quantum_state();
+    // println!("{}", circuit);
+
+    // circuit.X(1);
+    // let mut x_gate = X(0);
+    // x_gate.add_control_qubit(1);
+    // circuit.add_gate(x_gate);
+    // circuit.update_quantum_state();
+    // println!("{}", circuit);
 }
