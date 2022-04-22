@@ -4,6 +4,7 @@ use qustV2::{
     gates::{
         double::DoubleGateApplicator,
         single::{SingleGateApplicator, X},
+        triple::TripleGateApplicator,
     },
     state::QuantumState,
 };
@@ -113,8 +114,16 @@ fn main() {
     // circuit.update_quantum_state();
     // println!("{}", circuit);
 
-    circuit.X(0);
-    circuit.CNOT(0, 1);
-    circuit.update_quantum_state();
-    println!("{}", circuit);
+    // 2ビットゲート
+    // circuit.X(0);
+    // circuit.CNOT(0, 1);
+    // circuit.update_quantum_state();
+    // println!("{}", circuit);
+
+    // // TODO: 3ビットゲート
+    // circuit.X(0);
+    // circuit.X(1);
+    // circuit.CCNOT(0, 1, 2);
+    // circuit.update_quantum_state();
+    // println!("{}", circuit);
 }
