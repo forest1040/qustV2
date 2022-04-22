@@ -118,35 +118,6 @@ impl QuantumState {
         Complex::new(real_sum, imag_sum)
     }
 
-    // pub fn applyOld(
-    //     &mut self,
-    //     qubits_ctrl: &Vec<usize>,
-    //     qubits_target: &Vec<usize>,
-    //     matrix: &Array2<Complex<f64>>,
-    // ) {
-    //     let qsize = qubits_ctrl.len() + qubits_target.len();
-    //     // TODO: 制御ビット対応
-    //     //qubits.push(0);
-    //     //let qubits = qubits.push(0);
-    //     let mut qubits = qubits_target.to_owned();
-    //     qubits.append(&mut qubits_target);
-
-    //     let masks = mask_vec(&qubits);
-    //     println!("masks: {:?}", masks);
-    //     for i in 0..self.dim >> qsize {
-    //         let indices = indices_vec(i, &qubits, &masks);
-    //         println!("indices_vec: {:?}", indices);
-    //         let values = indices.iter().map(|&i| self.states[i]).collect::<Vec<_>>();
-    //         // TODO: 制御ビット対応
-    //         println!("matrix: {}", matrix);
-    //         let new_values = matrix.dot(&arr1(&values));
-    //         println!("new_values: {}", new_values);
-    //         for (&i, nv) in indices.iter().zip(new_values.to_vec()) {
-    //             self.states[i] = nv;
-    //         }
-    //     }
-    // }
-
     pub fn apply(
         &mut self,
         qubits_ctrl: &Vec<usize>,
@@ -154,20 +125,20 @@ impl QuantumState {
         matrix: &Array2<Complex<f64>>,
     ) {
         let qsize = qubits_ctrl.len() + qubits_target.len();
-        println!("qsize: {}", qsize);
+        //println!("qsize: {}", qsize);
         let mut qubits = qubits_ctrl.to_owned();
         let mut qubits_tgt = qubits_target.to_owned();
         qubits.append(&mut qubits_tgt);
 
         let masks = mask_vec(&qubits);
-        println!("masks: {:?}", masks);
+        //println!("masks: {:?}", masks);
         for i in 0..self.dim >> qsize {
             let indices = indices_vec(i, &qubits_ctrl, &qubits_target, &masks);
-            println!("indices_vec: {:?}", indices);
+            //println!("indices_vec: {:?}", indices);
             let values = indices.iter().map(|&i| self.states[i]).collect::<Vec<_>>();
             //println!("matrix: {}", matrix);
             let new_values = matrix.dot(&arr1(&values));
-            println!("new_values: {}", new_values);
+            //println!("new_values: {}", new_values);
             for (&i, nv) in indices.iter().zip(new_values.to_vec()) {
                 self.states[i] = nv;
             }
