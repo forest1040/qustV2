@@ -176,8 +176,15 @@ impl QuantumState {
 
 impl fmt::Display for QuantumState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let sv: Vec<String> = self.states.iter().map(|x| x.to_string()).collect();
-        let svs = sv.join("\n");
+        let mut svs = String::from("");
+        for i in 0..self.dim {
+            svs += &format!(
+                "{:0>width$b}> {}\n",
+                i,
+                self.states[i],
+                width = self.qubit_count
+            );
+        }
         let tmp = format!(
             r"* Qubit Count  : {}
 * Dimension    : {}

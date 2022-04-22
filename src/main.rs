@@ -92,6 +92,7 @@ fn main() {
     println!("{}", circuit);
 
     circuit.X(0);
+    circuit.X(1);
     circuit.update_quantum_state();
     println!("{}", circuit);
 
